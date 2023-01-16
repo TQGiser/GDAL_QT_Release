@@ -147,7 +147,7 @@ void MainWindow::on_pushButton_clicked()
         GDALRasterBand *poBand = poDataset->GetRasterBand(1);
         int nXSize = poBand->GetXSize();
         float *valueResultList = new float[nXSize];
-        poBand->RasterIO(GF_Read,2000,2000,1,1,valueResultList,nXSize,1,GDT_Float32,0,0);
+        poBand->RasterIO(GF_Read,2010,2000,1,1,valueResultList,nXSize,1,GDT_Float32,0,0);
         ui->plainTextEdit->appendPlainText(QString::number(valueResultList[0],'f',0));
 
     };
