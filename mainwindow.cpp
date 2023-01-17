@@ -31,6 +31,7 @@ void MainWindow::on_pushButton_clicked()
 {
     ui->plainTextEdit->clear();
     GDALAllRegister();
+    CPLSetConfigOption("GTIFF_SRS_SOURCE","EPSG");
     QString pic =  QFileDialog::getOpenFileName(this,"选择影像","","Images(*.jpg | *.tif)");
     if (pic.isEmpty()) //如果一个文件都没选
         return;
@@ -111,6 +112,9 @@ void MainWindow::on_pushButton_clicked()
 
     if(str =="GTiff" )
     {
+        //WKID
+        ui->plainTextEdit->appendPlainText("WKID : " + QString::number(poDataset->GetSpatialRef()->GetEPSGGeogCS()));
+
         if(poDataset->GetSpatialRef()->IsProjected() == 1)
         {
             ui->plainTextEdit->appendPlainText("投影信息：已投影");
@@ -166,6 +170,7 @@ void MainWindow::on_pushButton_clicked()
         //        float *valueResultList = new float[nXSize];
         //        poBand->RasterIO(GF_Read,2010,2000,1,1,valueResultList,nXSize,1,GDT_Float32,0,0);
         //        ui->plainTextEdit->appendPlainText(QString::number(valueResultList[0],'f',0));
+
 
     };
 
