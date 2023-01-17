@@ -66,7 +66,6 @@ void MainWindow::on_pushButton_clicked()
         {
             for(int i=0;papszMetadata[i]!=NULL;i++){
                 QString  info = papszMetadata[i];
-
                 if(info.contains(".",Qt::CaseSensitive)&&info.contains("Altitude",Qt::CaseSensitive))
                 {
                     QStringList info_Altitude = info.split("=");
@@ -137,14 +136,22 @@ void MainWindow::on_pushButton_clicked()
         {
             ui->plainTextEdit->appendPlainText("投影信息：未投影");
             ui->plainTextEdit->appendPlainText("投影信息:" + QString(poDataset->GetSpatialRef()->GetAttrValue("GEOGCS")));
+            GDALRasterBand *poBand = poDataset->GetRasterBand(1);
+            int XSize =  poBand->GetXSize();
+            int YSize = poBand->GetYSize();
+            ui->plainTextEdit->appendPlainText("E尺寸 : " + QString::number(XSize));
+            ui->plainTextEdit->appendPlainText("N尺寸 : " + QString::number(YSize));
             double test[6];
             poDataset->GetGeoTransform(test);
-            //upleft Coordinate
-            ui->plainTextEdit->appendPlainText("上坐标 = " + QString::number(test[0],'f',8));
-            ui->plainTextEdit->appendPlainText("左坐标 = " + QString::number(test[3],'f',8));
+            //downleft Coordinate
+            double downCoord = test[3] + YSize*test[5];
+//            qreal a = test[3] +YSize*test[5];
+//            float downCoord = qRound64(a);
+            ui->plainTextEdit->appendPlainText("左上坐标 = " + QString::number(test[0],'f',8) + "," +  QString::number(test[3],'f',8));
+            ui->plainTextEdit->appendPlainText("左下坐标 = " + QString::number(test[0],'f',8) + "," +  QString::number(downCoord,'f',8));
             //pixel width and height
-            ui->plainTextEdit->appendPlainText("像元大小(宽) = " + QString::number(test[1],'f',16));
-            ui->plainTextEdit->appendPlainText("像元大小(高) = " + QString::number(test[5],'f',16));
+            ui->plainTextEdit->appendPlainText("像元大小(宽) = " + QString::number(test[1],'f',10));
+            ui->plainTextEdit->appendPlainText("像元大小(高) = " + QString::number(test[5],'f',10));
         }
         GDALDataset::Bands poBands = poDataset->GetBands();
         for(int i=1;i<poBands.size()+1;i++){
